@@ -11,3 +11,6 @@ CTestTestfile.cmake
 _deps
 
 *.swp
+
+build/
+*.wav

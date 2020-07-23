@@ -1,10 +1,6 @@
 #ifndef _H_FFT_BASE_
 #define _H_FFT_BASE_
 
-/* If defined Use FFT from Numerical recipes 
- * else Use Ooura FFT */
-#define _Numerical_FFT_
-
 class FFT_Base {
 protected:
   int frame_size;

@@ -1,15 +1,9 @@
 #ifndef _H_STFT_
 #define _H_STFT_
 
-#include "Num_FFT.h"
 #include "Ooura_FFT.h"
 #include "HannWindow.h"
 #include "PostProcessor.h"
-
-/* if defined : use FFT of Numerical Recipes.
- * else       : use Ooura FFT 
- **/
-//#define _Numerical_FFT_
 
 class STFT{
   private : 
@@ -40,11 +34,7 @@ STFT::STFT(int channels_,int frame_,int shift_){
   ol = frame_size - shift_size;
 
   hw = new HannWindow(frame_size, shift_size);
-#ifdef _Numerical_FFT_
-  fft = new Num_FFT(frame_size, channels);
-#else
   fft= new Ooura_FFT(frame_size, channels);
-#endif
   ap = new PostProcessor(frame_size, shift_size, channels);
 
   buf =  new double*[channels];

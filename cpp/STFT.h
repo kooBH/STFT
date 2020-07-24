@@ -8,7 +8,7 @@
 class STFT{
   private : 
     HannWindow *hw;
-    FFT_Base *fft;
+    Ooura_FFT *fft;
     PostProcessor *ap;
 
     int channels;

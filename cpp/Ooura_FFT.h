@@ -1,11 +1,12 @@
 #ifndef _H_OOURA_FFT_
 #define _H_OOURA_FFT_
 
-#include "FFT_Base.h"
 #include <cmath>
 
-class Ooura_FFT : public FFT_Base {
+class Ooura_FFT{
 private:
+    int frame_size;
+    int channels;
     double **a, **w;
     int **ip;
 
@@ -311,8 +312,20 @@ inline void ddst(int, int, double *, int *, double *);
 inline void dfct(int, double *, double *, int *, double *);
 inline void dfst(int, double *, double *, int *, double *);
 
-inline Ooura_FFT::Ooura_FFT(int _frame_size, int _channels)
-    : FFT_Base(_frame_size, _channels) {
+inline void makewt(int nw, int* ip, double* w);
+inline void makect(int nc, int* ip, double* c);
+inline void bitrv2(int n, int* ip, double* a);
+inline void cftfsub(int n, double* a, double* w);
+inline void cftbsub(int n, double* a, double* w);
+inline void rftfsub(int n, double* a, int nc, double* c);
+inline void rftbsub(int n, double* a, int nc, double* c);
+
+inline void cft1st(int n, double* a, double* w);
+inline void cftmdl(int n, int l, double* a, double* w);
+
+inline Ooura_FFT::Ooura_FFT(int _frame_size, int _channels){
+    frame_size = _frame_size;
+    channels = _channels;
 
     a = new double *[channels];
     for (int i = 0; i < channels; i++)

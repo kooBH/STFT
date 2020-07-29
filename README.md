@@ -2,16 +2,17 @@
 
 ```git clone --recursive https://github.com/kooBH/STFT.git```
 
---recursive 을 해야 서브 모듈로 들어가있는 koobh/WAV.git을 같이 clone합니다.
-이미 clone 한 상태에서 서브 모듈을 받으려면
+Need to clone '''--recursive''' to use submodule for test '''koobh/WAV.git'''
+If you alread cloned than,
 ```
 git submoudle init
 git submodule update
 ```
+to use submodule
 
 ---
 
 ## STATUS
 
-C[WIP] : STFT만 구현됨, ISTFT 구현중  
-cpp    : 검증됨
+C[WIP] : only STFT is implemented, iSTFT is not implemented
+cpp    : verified

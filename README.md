@@ -14,5 +14,5 @@ to use submodule
 
 ## STATUS
 
-C[WIP] : only STFT is implemented, iSTFT is not implemented
+C[WIP] : only STFT is implemented, iSTFT is not implemented  
 cpp    : verified

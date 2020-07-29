@@ -21,6 +21,10 @@ class STFT{
   public :
     inline STFT(int channels,int frame,int shift);
     inline ~STFT();
+    /*in : raw buffer from wav or mic
+      length : shift_size * channels
+      out : STFTed buffer [channels][frame_siz]
+      */
     inline void stft(short*in,int length,double**out);
     inline void istft(double**in,short*out);
 };

@@ -2,7 +2,7 @@
 
 ```git clone --recursive https://github.com/kooBH/STFT.git```
 
-Need to clone '''--recursive''' to use submodule for test '''koobh/WAV.git'''
+Need to clone ```--recursive``` to use submodule for test ```koobh/WAV.git```
 If you alread cloned than,
 ```
 git submoudle init

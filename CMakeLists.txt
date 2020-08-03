@@ -8,9 +8,7 @@ set(LINKLIBS
 set(COMPILE_OPTION)
 set(SRC 
   test.cpp 
-  cpp/FFT_Base.h
   cpp/HannWindow.h
-  cpp/Num_FFT.h
   cpp/Ooura_FFT.h
   cpp/PostProcessor.h
   cpp/STFT.h

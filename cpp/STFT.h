@@ -21,12 +21,20 @@ class STFT{
   public :
     inline STFT(int channels,int frame,int shift);
     inline ~STFT();
-    /*in : raw buffer from wav or mic
-      length : shift_size * channels
-      out : STFTed buffer [channels][frame_siz]
+    /* in from input device or file
+    
+      in : raw buffer from wav or mic
+      length : shift_size * channels   (for not fully occupied input)
+      out : STFTed buffer [channels][frame_size + 2] (half FFT with complex)
       */
     inline void stft(short*in,int length,double**out);
     inline void istft(double**in,short*out);
+
+    /* Single-Channel    
+      in : 1 x shift
+      out : 1 x frame_size + 2 (half FFT with complex)
+    */
+    inline void stft(short* in, double* out);
 };
 
 
@@ -115,6 +123,26 @@ void STFT::istft(double**in,short*out){
 
   /*** Output ***/
   memcpy(out,ap->Overlap(in),sizeof(short)*shift_size*channels);
+}
+
+
+// Single-Channel double
+void STFT::stft(short* in, double* out){
+    /*** Shfit & Copy***/
+    for (i = 0; i < ol; i++) {
+        buf[0][i] = buf[0][i + shift_size];
+    }
+    for (i = 0; i < shift; i++)
+        buf[0][ol + i] = in[i];
+
+    memcpy(out, buf, sizeof(double) * frame_size);
+    
+    /*** Window ***/
+    hw->Process(out);
+
+    /*** FFT ***/
+    fft->FFT(out);
+
 }
 
 

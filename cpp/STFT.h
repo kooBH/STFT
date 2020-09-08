@@ -35,6 +35,7 @@ class STFT{
       out : 1 x frame_size + 2 (half FFT with complex)
     */
     inline void stft(short* in, double* out);
+    inline void stft(double* in, double* out);
 };
 
 
@@ -133,7 +134,7 @@ void STFT::stft(short* in, double* out){
         buf[0][i] = buf[0][i + shift_size];
     }
     for (i = 0; i < shift; i++)
-        buf[0][ol + i] = in[i];
+        buf[0][ol + i] = static_cast<double>in[i];
 
     memcpy(out, buf, sizeof(double) * frame_size);
     
@@ -142,8 +143,22 @@ void STFT::stft(short* in, double* out){
 
     /*** FFT ***/
     fft->FFT(out);
-
 }
+void STFT::stft(double* in, double* out) {
+    /*** Shfit & Copy***/
+    for (i = 0; i < ol; i++) {
+        buf[0][i] = buf[0][i + shift_size];
+    }
+    for (i = 0; i < shift; i++)
+        buf[0][ol + i] = in[i];
 
+    memcpy(out, buf, sizeof(double) * frame_size);
+
+    /*** Window ***/
+    hw->Process(out);
+
+    /*** FFT ***/
+    fft->FFT(out);
+}
 
 #endif

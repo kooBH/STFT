@@ -129,6 +129,7 @@ void STFT::istft(double**in,short*out){
 
 // Single-Channel double
 void STFT::stft(short* in, double* out){
+	int i;
     /*** Shfit & Copy***/
     for (i = 0; i < ol; i++) {
         buf[0][i] = buf[0][i + shift_size];
@@ -145,7 +146,8 @@ void STFT::stft(short* in, double* out){
     fft->FFT(out);
 }
 void STFT::stft(double* in, double* out) {
-    /*** Shfit & Copy***/
+    int i;
+	/*** Shfit & Copy***/
     for (i = 0; i < ol; i++) {
         buf[0][i] = buf[0][i + shift_size];
     }

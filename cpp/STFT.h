@@ -137,7 +137,7 @@ void STFT::stft(short* in, double* out){
     for (i = 0; i < shift_size; i++)
         buf[0][ol + i] = static_cast<double>(in[i]);
 
-    memcpy(out, buf, sizeof(double) * frame_size);
+    memcpy(out, buf[0], sizeof(double) * frame_size);
     
     /*** Window ***/
     hw->Process(out);
@@ -154,7 +154,7 @@ void STFT::stft(double* in, double* out) {
     for (i = 0; i < shift_size; i++)
         buf[0][ol + i] = in[i];
 
-    memcpy(out, buf, sizeof(double) * frame_size);
+    memcpy(out, buf[0], sizeof(double) * frame_size);
 
     /*** Window ***/
     hw->Process(out);

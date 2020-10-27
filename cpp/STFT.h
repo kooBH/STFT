@@ -30,12 +30,19 @@ class STFT{
     inline void stft(short*in,int length,double**out);
     inline void istft(double**in,short*out);
 
+    /* 2-D raw input 
+       in  : [channels][shift_size]   raw data in double
+       out : [channels][frame_size+2]
+    */
+    inline void stft(double** in, double** out);
+
     /* Single-Channel    
       in : 1 x shift
       out : 1 x frame_size + 2 (half FFT with complex)
     */
     inline void stft(short* in, double* out);
     inline void stft(double* in, double* out);
+
 };
 
 
@@ -162,5 +169,27 @@ void STFT::stft(double* in, double* out) {
     /*** FFT ***/
     fft->FFT(out);
 }
+
+
+void STFT::stft(double** in, double** out) {
+    int i,j;
+	/*** Shfit & Copy***/
+#pragma omp parallel for
+    for (j = 0; j < channels; j++) {
+      for (i = 0; i < ol; i++) {
+        buf[j][i] = buf[j][i + shift_size];
+      }
+      for (i = 0; i < shift_size; i++)
+        buf[j][ol + i] = in[i];
+      memcpy(out[j], buf[j], sizeof(double) * frame_size);
+    }
+
+    /*** Window ***/
+    hw->Process(out);
+
+    /*** FFT ***/
+    fft->FFT(out);
+}
+
 
 #endif

@@ -180,12 +180,12 @@ void STFT::stft(double** in, double** out) {
         buf[j][i] = buf[j][i + shift_size];
       }
       for (i = 0; i < shift_size; i++)
-        buf[j][ol + i] = in[i];
+        buf[j][ol + i] = in[j][i];
       memcpy(out[j], buf[j], sizeof(double) * frame_size);
     }
 
     /*** Window ***/
-    hw->Process(out);
+    hw->Process(out,channels);
 
     /*** FFT ***/
     fft->FFT(out);

@@ -184,6 +184,12 @@ void STFT::stft(double** in, double** out) {
       memcpy(out[j], buf[j], sizeof(double) * frame_size);
     }
 
+
+  // scaling for precision
+  for (i = 0; i < channels; i++)
+    for (j = 0; j < frame_size; j++)
+      out[i][j] /= 32767.0;
+
     /*** Window ***/
     hw->Process(out,channels);
 

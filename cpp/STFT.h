@@ -43,6 +43,8 @@ class STFT{
     inline void stft(short* in, double* out);
     inline void stft(double* in, double* out);
 
+    //for separated 3-channels wav
+    inline void stft(short* in_1, short* in_2, short* in_3, int length, double** out);
 };
 
 
@@ -197,5 +199,57 @@ void STFT::stft(double** in, double** out) {
     fft->FFT(out);
 }
 
+//for separated 3-channels wav
+void STFT:: stft(short* in_1, short* in_2, short* in_3, int length, double** out); {
+    int i, j;
+    short** in;
+    in[0] = in_1;
+    in[1] = in_2;
+    in[2] = in_3;
+
+    /*** Shfit & Copy***/
+    for (j = 0; j < channels; j++) {
+        for (i = 0; i < ol; i++) {
+            buf[j][i] = buf[j][i + shift_size];
+        }
+    }
+    //// EOF
+    if (length != shift_size * channels) {
+
+        length = length / channels;
+        for (i = 0; i < length; i++) {
+            for (j = 0; j < channels; j++)
+                buf[j][i + ol]
+                = (double)(in[j][i]);
+        }
+        for (i = length; i < shift_size; i++) {
+            for (j = 0; j < channels; j++)
+                buf[j][i + ol] = 0;
+        }
+        //// continue
+    }
+    else {
+        for (i = 0; i < shift_size; i++) {
+            for (j = 0; j < channels; j++) {
+                buf[j][i + ol]
+                    = (double)(in[j][i]);
+            }
+        }
+    }
+    /*** Copy input -> hann_input buffer ***/
+    for (i = 0; i < channels; i++)
+        memcpy(out[i], buf[i], sizeof(double) * frame_size);
+
+    // scaling for precision
+    for (i = 0; i < channels; i++)
+        for (j = 0; j < frame_size; j++)
+            out[i][j] /= 32767.0;
+
+    /*** Window ***/
+    hw->Process(out, channels);
+
+    /*** FFT ***/
+    fft->FFT(out);
+}
 
 #endif

@@ -200,7 +200,7 @@ void STFT::stft(double** in, double** out) {
 }
 
 //for separated 3-channels wav
-void STFT:: stft(short* in_1, short* in_2, short* in_3, int length, double** out); {
+void STFT:: stft(short* in_1, short* in_2, short* in_3, int length, double** out){
     int i, j;
     short** in;
     in[0] = in_1;

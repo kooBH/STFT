@@ -40,5 +40,5 @@ while(!input.IsEOF()){
 
 ## STATUS
 
-C[WIP] : only STFT is implemented, iSTFT is not implemented yet 
-cpp    : verified (same output as MATLAB routine)
+C[WIP] : only STFT is implemented, iSTFT is not implemented yet   
+cpp    : verified (same output as MATLAB routine)  

@@ -2,9 +2,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(cpp_test)
 
-set(LINKLIBS
-  m
-  )
+if(MSVC)
+  set(LINKLIBS
+    m
+    )
+else(MSVC)
+
 set(COMPILE_OPTION)
 set(SRC 
   test.cpp 

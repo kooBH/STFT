@@ -21,6 +21,11 @@ to use submodule
 ## EXAMPLE
 
 ```cpp
+
+#include "cpp/STFT.h"
+
+...
+
 // frame/shift must be 4 or 2
 STFT process(channels,frame,shift);
 

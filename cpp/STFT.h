@@ -25,23 +25,28 @@ class STFT{
     
       in : raw buffer from wav or mic
       length : shift_size * channels   (for not fully occupied input)
-      out : STFTed buffer [channels][frame_size + 2] (half FFT with complex)
+      out : STFTed buffer [channels][frame_size + 2] (half FFT in complex)
       */
     inline void stft(short*in,int length,double**out);
     inline void istft(double**in,short*out);
 
-    /* 2-D raw input 
+    /* 2-D raw input STFT
        in  : [channels][shift_size]   raw data in double
        out : [channels][frame_size+2]
     */
     inline void stft(double** in, double** out);
 
-    /* Single-Channel    
+    /* Single-Channel STFT   
       in : 1 x shift
-      out : 1 x frame_size + 2 (half FFT with complex)
+      out : 1 x frame_size + 2 (half FFT in complex)
     */
     inline void stft(short* in, double* out);
     inline void stft(double* in, double* out);
+
+    /* Single-Channel ISTFT   
+      in : 1 x frame_size + 2 (half FFT in complex)
+      out : 1 x shift_size     */
+    inline void istft(double* in, short* out);
 
     //for separated 3-channels wav
     inline void stft(short* in_1, short* in_2, short* in_3, int length, double** out);
@@ -250,6 +255,17 @@ void STFT:: stft(short* in_1, short* in_2, short* in_3, int length, double** out
 
     /*** FFT ***/
     fft->FFT(out);
+}
+
+void STFT::istft(double* in, short* out) {
+  /*** iFFT ***/
+  fft->iFFT(in);
+
+  /*** Window ***/
+  hw->Process(in);
+
+  /*** Output ***/
+  memcpy(out,ap->Overlap(in),sizeof(short)*shift_size);
 }
 
 #endif

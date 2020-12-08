@@ -28,6 +28,7 @@ class STFT{
       out : STFTed buffer [channels][frame_size + 2] (half FFT in complex)
       */
     inline void stft(short*in,int length,double**out);
+    inline void istftSingle(double**in,short*out);
     inline void istft(double**in,short*out);
 
     /* 2-D raw input STFT
@@ -179,23 +180,23 @@ void STFT::stft(double* in, double* out) {
 
 
 void STFT::stft(double** in, double** out) {
-    int i,j;
 	/*** Shfit & Copy***/
 #pragma omp parallel for
-    for (j = 0; j < channels; j++) {
-      for (i = 0; i < ol; i++) {
+    for (int j = 0; j < channels; j++) {
+      for (int i = 0; i < ol; i++) {
         buf[j][i] = buf[j][i + shift_size];
       }
-      for (i = 0; i < shift_size; i++)
+      for (int i = 0; i < shift_size; i++){
         buf[j][ol + i] = in[j][i];
-      memcpy(out[j], buf[j], sizeof(double) * frame_size);
+        memcpy(out[j], buf[j], sizeof(double) * frame_size);
+      }
     }
 
-
   // scaling for precision
-  for (i = 0; i < channels; i++)
-    for (j = 0; j < frame_size; j++)
+  for (int i = 0; i < channels; i++)
+    for (int j = 0; j < frame_size; j++){
       out[i][j] /= 32767.0;
+    }
 
     /*** Window ***/
     hw->Process(out,channels);
@@ -266,6 +267,17 @@ void STFT::istft(double* in, short* out) {
 
   /*** Output ***/
   memcpy(out,ap->Overlap(in),sizeof(short)*shift_size);
+}
+
+void STFT::istftSingle(double**in,short*out){
+  /*** iFFT ***/
+  fft->iFFT(in);
+
+  /*** Window ***/
+  hw->Process(in, 1);
+
+  /*** Output ***/
+  memcpy(out,ap->OverlapSingle(in),sizeof(short)*shift_size*1);
 }
 
 #endif

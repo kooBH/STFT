@@ -2,19 +2,19 @@
 
 STFT(Short Time Fourier Transform), ISTFT(Inverse - Short Time Fourier Transform) for wav,mic input  
 
-provide 25%,50% overlap STFT process.  
+provides 25%,50% overlap STFT process.  
 
 ## NOTE
 
 ```git clone --recursive https://github.com/kooBH/STFT.git```
 
-Need to clone ```--recursive``` to use submodule for test ```koobh/WAV.git```
-If you alread cloned then,
+To build test code you need to clone ```--recursive``` to use submodule  ```koobh/WAV.git```
+If you already cloned, then,
 ```
 git submoudle init
 git submodule update
 ```
-to use submodule
+to use submodule.
 
 ---
 
@@ -40,5 +40,5 @@ while(!input.IsEOF()){
 
 ## STATUS
 
-C[WIP] : only STFT is implemented, iSTFT is not implemented yet   
-cpp    : verified (same output as MATLAB routine)  
+C       : only STFT is implemented, iSTFT is not implemented yet   
+C++    : verified (same output as MATLAB routine)  

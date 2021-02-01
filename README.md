@@ -16,7 +16,11 @@ git submodule update
 ```
 to use submodule.
 
----
+## About FFT  
+I'm currently using FFT of [Ooura](http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html).  
+Since, it is fastest FFT in a single header file.   
+But, sometimes (usally not), there is error between MATLAB FFT output and Ooura FFT output.     
+If you need to perfectly same output as MATLAB, you should use other FFT library.  
 
 ## EXAMPLE
 

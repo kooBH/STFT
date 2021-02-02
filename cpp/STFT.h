@@ -36,6 +36,8 @@ class STFT{
        out : [channels][frame_size+2]
     */
     inline void stft(double** in, double** out);
+	// 2-D raw input STFT for certain channels
+	inline void stft(double** in, double** out,int target_channels);
 
     /* Single-Channel STFT   
       in : 1 x shift
@@ -203,6 +205,32 @@ void STFT::stft(double** in, double** out) {
 
     /*** FFT ***/
     fft->FFT(out);
+}
+
+void STFT::stft(double** in, double** out,int target_channels){
+		/*** Shfit & Copy***/
+#pragma omp parallel for
+    for (int j = 0; j < target_channels; j++) {
+      for (int i = 0; i < ol; i++) {
+        buf[j][i] = buf[j][i + shift_size];
+      }
+      for (int i = 0; i < shift_size; i++){
+        buf[j][ol + i] = in[j][i];
+        memcpy(out[j], buf[j], sizeof(double) * frame_size);
+      }
+    }
+
+  // scaling for precision
+  for (int i = 0; i < target_channels; i++)
+    for (int j = 0; j < frame_size; j++){
+      out[i][j] /= 32767.0;
+    }
+
+    /*** Window ***/
+    hw->Process(out,target_channels);
+
+    /*** FFT ***/
+    fft->FFT(out,taret_channels);
 }
 
 //for separated 3-channels wav

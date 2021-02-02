@@ -15,6 +15,7 @@ public:
     inline ~Ooura_FFT();
 
     inline void FFT(double **);
+	inline void FFT(double **, int taret_channels);
     inline void iFFT(double **);
     inline void FFT(double *);
     inline void iFFT(double *);
@@ -371,6 +372,29 @@ inline void Ooura_FFT::FFT(double **data) {
         t[frame_size] = a[j][1];
         t[frame_size + 1] = 0;
     }
+}
+
+void Ooura_FFT::FFT(double **, int taret_channels){
+	    int j;
+#pragma omp parallel for
+    for (j = 0; j < taret_channels; j++) {
+        double *t;
+        t = data[j];
+        ip[j][0] = 0;
+        for (int i = 0; i < frame_size; i++)
+            a[j][i] = t[i];
+
+        rdft(frame_size, 1, a[j], ip[j], w[j]);
+
+        for (int i = 0; i < frame_size; i += 2) {
+            t[i] = a[j][i];
+            t[i + 1] = -a[j][i + 1];
+        }
+        t[1] = 0;
+        t[frame_size] = a[j][1];
+        t[frame_size + 1] = 0;
+    }
+	
 }
 
 inline void Ooura_FFT::FFT(double *data) {

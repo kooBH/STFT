@@ -230,7 +230,7 @@ void STFT::stft(double** in, double** out,int target_channels){
     hw->Process(out,target_channels);
 
     /*** FFT ***/
-    fft->FFT(out,taret_channels);
+    fft->FFT(out,target_channels);
 }
 
 //for separated 3-channels wav

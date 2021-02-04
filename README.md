@@ -19,10 +19,12 @@ to use submodule.
 ## About FFT  
 I'm currently using FFT of [Ooura](http://www.kurims.kyoto-u.ac.jp/~ooura/fft.html).  
 Since, it is fastest FFT in a single header file.   
-But, sometimes (usally not), there is error between MATLAB FFT output and Ooura FFT output.     
-If you need to perfectly same output as MATLAB, you should use other FFT library.  
+But, sometimes (usually  not), there are errors between MATLAB FFT output and Ooura FFT output.     
+If you need to perfectly same output as MATLAB, you have to use other FFT library.  
 
 ## EXAMPLE
+
++ Directly from buffer  
 
 ```cpp
 
@@ -31,11 +33,45 @@ If you need to perfectly same output as MATLAB, you should use other FFT library
 ...
 
 // frame/shift must be 4 or 2
-STFT process(channels,frame,shift);
+STFT process(channels,frame_size,shift_size);
+WAV input;
+WAV output(channels,sample_rate);
+input.OpenFile('input.wav');
+
+short* buf_in; //[channels * shift_size]
+double **data; //[channels][frame_size]
+short* buf_out; //[channels * shift_size]
 
 while(!input.IsEOF()){
     length = input.ReadUnit(buf_in,shift*channels);
     process.stft(buf_in,length,data);
+    process.istft(data,buf_out);
+    output.Append(buf_out,shift*channels);
+  }
+
+```
+
++ From 2D array
+
+```cpp
+
+#include "cpp/STFT.h"
+
+...
+
+// frame/shift must be 4 or 2
+STFT process(channels,frame_size,shift_size);
+WAV input;
+WAV output(channels,sample_rate);
+input.OpenFile('input.wav');
+
+double **raw; //[channels][shift_size]
+double **data; //[channels][frame_size]
+short* buf_out; //[channels * shift_size]
+
+while(!input.IsEOF()){
+    input.Convert2Array(raw);
+    process.stft(raw,data);
     process.istft(data,buf_out);
     output.Append(buf_out,shift*channels);
   }

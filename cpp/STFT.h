@@ -36,8 +36,7 @@ class STFT{
        out : [channels][frame_size+2]
     */
     inline void stft(double** in, double** out);
-	// 2-D raw input STFT for certain channels
-	inline void stft(double** in, double** out,int target_channels);
+	  inline void stft(double** in, double** out,int target_channels);
 
     /* Single-Channel STFT   
       in : 1 x shift

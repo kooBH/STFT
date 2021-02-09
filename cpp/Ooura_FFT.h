@@ -15,7 +15,7 @@ public:
     inline ~Ooura_FFT();
 
     inline void FFT(double **);
-	inline void FFT(double **, int tagret_channels);
+  	inline void FFT(double **, int target_channels);
     inline void iFFT(double **);
     inline void FFT(double *);
     inline void iFFT(double *);

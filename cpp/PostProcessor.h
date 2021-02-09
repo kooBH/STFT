@@ -23,7 +23,6 @@ public:
     inline ~PostProcessor();
 
     inline short *Overlap(double **in);
-    inline short *OverlapSingle(double **in);
     inline short *Overlap(double *in);
     inline short *Array2WavForm(double **in);
 
@@ -100,49 +99,24 @@ inline short *PostProcessor::Overlap(double **in) {
 }
 
 
-inline short *PostProcessor::OverlapSingle(double **in){
-    int i;
-        // Shift
-        for (i = 0; i < static_cast<int>(frame_size - shift_size); i++)
-            buf[0][i] = buf[0][i + shift_size];
-        // Emptying Last Block
-        memset(buf[0] + shift_size * (num_block - 1), 0,
-               sizeof(double) * shift_size);
-        // Sum
-        for (i = 0; i < static_cast<int>(frame_size); i++) {
-            buf[0][i] += in[0][i];
-        }
-    // Distribution for Wav format
-    for (i = 0; i < static_cast<int>(shift_size); i++) {
-#pragma ivdep
-            output[i] = static_cast<short>(buf[0][i] * 32767);
-        }
-    return output;
-}
-
 inline short *PostProcessor::Overlap(double *in) {
-  int i,j;
-  for (j = 0; j < static_cast<int>(channels); j++) {
+  int i;
     // Shift
     for (i = 0; i < static_cast<int>(frame_size - shift_size); i++)
-      buf[j][i] = buf[j][i + shift_size];
+      buf[0][i] = buf[0][i + shift_size];
 
     // Emptying Last Block
-    memset(buf[j] + shift_size * (num_block - 1), 0,
+    memset(buf[0] + shift_size * (num_block - 1), 0,
         sizeof(double) * shift_size);
 
     // Sum
     for (i = 0; i < static_cast<int>(frame_size); i++) {
-      buf[j][i] += in[j*(frame_size+2) +  i];
+      buf[0][i] += in[i];
     }
-  }
+
   // Distribution for Wav format
   for (i = 0; i < static_cast<int>(shift_size); i++) {
-#pragma ivdep
-    //output[i * channels + ch] = (short)(buf[ch][i] * 32767);
-    for (j = 0; j < static_cast<int>(channels); j++) {
-      output[i * channels + j] = static_cast<short>(buf[j][i] * 32767);
-    }
+      output[i] = static_cast<short>(buf[0][i] * 32767);
   }
 
   return output;

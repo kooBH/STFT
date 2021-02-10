@@ -294,15 +294,4 @@ void STFT::istft(double* in, short* out) {
   memcpy(out,ap->Overlap(in),sizeof(short)*shift_size);
 }
 
-void STFT::istft(double*in,short*out){
-  /*** iFFT ***/
-  fft->iFFT(in);
-
-  /*** Window ***/
-  hw->Process(in, 1);
-
-  /*** Output ***/
-  memcpy(out,ap->Overlap(in),sizeof(short)*shift_size*1);
-}
-
 #endif

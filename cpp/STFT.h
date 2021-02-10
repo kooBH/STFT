@@ -28,7 +28,6 @@ class STFT{
       out : STFTed buffer [channels][frame_size + 2] (half FFT in complex)
       */
     inline void stft(short*in,int length,double**out);
-    inline void istft(double*in,short*out);
     inline void istft(double**in,short*out);
 
     /* 2-D raw input STFT

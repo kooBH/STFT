@@ -8,6 +8,9 @@ if(MSVC)
     )
 else(MSVC)
 
+endif()
+
+set(INCL WAV)
 set(COMPILE_OPTION)
 set(SRC 
   test.cpp 
@@ -15,12 +18,12 @@ set(SRC
   cpp/Ooura_FFT.h
   cpp/PostProcessor.h
   cpp/STFT.h
-  WAV/WAV.cpp
   WAV/WAV.h
   )
 
 add_executable(${PROJECT_NAME} ${SRC})
 target_link_libraries(${PROJECT_NAME} ${LINKLIBS})
+target_include_directories(${PROJECT_NAME}	PRIVATE	${INCL}  )
 target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_OPTION} )
 set_target_properties(${PROJECT_NAME} PROPERTIES  CXX_STANDARD 14 )
 

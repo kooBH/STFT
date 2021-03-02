@@ -3,11 +3,11 @@ cmake_minimum_required(VERSION 3.5)
 project(cpp_test)
 
 if(MSVC)
-  set(LINKLIBS
-    m
-    )
+  
 else(MSVC)
-
+	set(LINKLIBS
+		m
+    )
 endif()
 
 set(INCL WAV)

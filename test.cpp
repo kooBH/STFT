@@ -3,10 +3,10 @@
 
 int main(){
   
-  int ch = 6;
-  int rate = 16000;
-  int frame = 512;
-  int shift = 128;  
+  const int ch = 6;
+  const int rate = 16000;
+  const int frame = 512;
+  const int shift = 128;  
   int length;
 
   WAV input;

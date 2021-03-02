@@ -131,7 +131,6 @@ void STFT::stft(short*in,int length,double**out){
   fft->FFT(out);
 }
 
-
 void STFT::stft(short* in, int length, double** out, int target_channels) {
   int tmp = channels;
   channels = target_channels;

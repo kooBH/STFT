@@ -30,6 +30,8 @@ class STFT{
     inline void stft(short*in,int length,double**out);
     inline void istft(double**in,short*out);
 
+    inline void stft(short*in,int length,double**out,int target_channels);
+
     /* 2-D raw input STFT
        in  : [channels][shift_size]   raw data in double
        out : [channels][frame_size+2]
@@ -127,6 +129,14 @@ void STFT::stft(short*in,int length,double**out){
 
   /*** FFT ***/
   fft->FFT(out);
+}
+
+
+void STFT::stft(short* in, int length, double** out, int target_channels) {
+  int tmp = channels;
+  channels = target_channels;
+  stft(in, length, out);
+  channels = tmp;
 }
 
 

@@ -32,52 +32,43 @@ public:
 
 inline HannWindow::HannWindow(int _frame_size, int _shift_size) {
     int i;
-    double temp;
+    double tmp = 0;
 
     shift_size = _shift_size;
     frame_size = _frame_size;
 
-    // From WPE_Online
-    /*
-     *
-     Nfft = BufferSize * 4;
-     Nfreq = Nfft / 2 + 1;
-     Nwin = BufferSize * 4;
-     *
-     */
     hann = new double[frame_size];
 
+    /* Ver 1 */
+    /*
     switch (frame_size / shift_size) {
     case 4:
         hann[0] = 0.0;
         for (i = 1; i < frame_size; ++i)
             hann[i] = 0.5 * (1.0 - cos(2.0 * M_PI * (double)i / (double)frame_size));
-
-        temp = sqrt((double)2 / 3);
+        tmp = sqrt((double)2 / 3);
         for (i = 1; i < frame_size; i++)
-            hann[i] *= temp;
-
+            hann[i] *= tmp;
         break;
-
     case 2:
-        for (i = 0; i < frame_size; i++) {
+        for (i = 0; i < frame_size; i++)
             hann[i] = sin(M_PI * (i + 0.5) / frame_size);
-        }
-
         break;
-    default:
-        printf("ERROR::frame_size/shift_size(%d) is Not Supported\n",
-               frame_size / shift_size);
-        exit(-1);
     }
-#ifndef NDEBUG
-/*
-  printf("INFO::HannWindow\n");
-  for(i=0;i<frame_size;i++)
-  printf("%lf ",hann[i]);
-  printf("\n");
-*/
-#endif
+    */
+
+    /* Ver 2 */
+    // win = hanning(frame_size,'periodic');
+    for (i = 0; i < frame_size; i++)
+      hann[i] = 0.5 * (1.0 - cos(2.0 * M_PI * (i / (double)frame_size)));
+
+    // win = win./sqrt(sum(win.^2)/shift_size);
+    for (i = 0; i < frame_size; i++)
+      tmp += hann[i] * hann[i];
+    tmp /= shift_size;
+
+    for (i = 0; i < frame_size; i++)
+      hann[i] /= std::sqrt(tmp);
 }
 
 inline HannWindow::~HannWindow() { delete[] hann; }

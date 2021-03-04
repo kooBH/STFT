@@ -446,29 +446,24 @@ inline void Ooura_FFT::iFFT(double **data) {
 }
 
 inline void Ooura_FFT::iFFT(double *data) {
-    int j;
+      double *t;
+      t = &data[0*(frame_size+2)];
+      ip[0][0] = 0;
+      for (int i = 0; i < frame_size; i += 2) {
+          a[0][i] = t[i];
+          a[0][i + 1] = -t[i + 1];
+      }
+      a[0][1] = t[frame_size];
 
-#pragma omp parallel for
-    for (j = 0; j < channels; j++) {
-        double *t;
-        t = &data[j*(frame_size+2)];
-        ip[j][0] = 0;
-        for (int i = 0; i < frame_size; i += 2) {
-            a[j][i] = t[i];
-            a[j][i + 1] = -t[i + 1];
-        }
-        a[j][1] = t[frame_size];
+      rdft(frame_size, -1, a[0], ip[0], w[0]);
+      for (int i = 0; i < frame_size; i++) {
+          a[0][i] *= 2.0;
+          a[0][i] /= frame_size;
+      }
 
-        rdft(frame_size, -1, a[j], ip[j], w[j]);
-        for (int i = 0; i < frame_size; i++) {
-            a[j][i] *= 2.0;
-            a[j][i] /= frame_size;
-        }
-
-        for (int i = 0; i < frame_size; i++) {
-            t[i] = a[j][i];
-        }
-    }
+      for (int i = 0; i < frame_size; i++) {
+          t[i] = a[0][i];
+      }
 }
 
 inline void Ooura_FFT::SingleFFT(double *data) {

@@ -8,7 +8,7 @@ class HannWindow {
   int cnt = 0;
 private:
     // MATLAB 'pi'
-    const double M_PI = 3.141592653589793;
+    const double MATLAB_pi= 3.141592653589793;
     double *hann;
     int shift_size;
     int frame_size;
@@ -61,7 +61,7 @@ inline HannWindow::HannWindow(int _frame_size, int _shift_size) {
     /* Ver 2 */
     // win = hanning(frame_size,'periodic');
     for (i = 0; i < frame_size; i++)
-      hann[i] = 0.5 * (1.0 - cos(2.0 * M_PI * (i / (double)frame_size)));
+      hann[i] = 0.5 * (1.0 - cos(2.0 * MATLAB_pi* (i / (double)frame_size)));
 
     // win = win./sqrt(sum(win.^2)/shift_size);
     for (i = 0; i < frame_size; i++)

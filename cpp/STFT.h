@@ -7,6 +7,8 @@
 
 class STFT{
   private : 
+    const double MATLAB_scale = 32768;
+
     HannWindow *hw;
     Ooura_FFT *fft;
     PostProcessor *ap;
@@ -122,7 +124,7 @@ void STFT::stft(short*in,int length,double**out){
   // scaling for precision
   for (i = 0; i < channels; i++)
     for (j = 0; j < frame_size; j++)
-      out[i][j] /= 32767.0;
+      out[i][j] /= MATLAB_scale;
 
   /*** Window ***/
   hw->Process(out, channels);
@@ -203,7 +205,7 @@ void STFT::stft(double** in, double** out) {
   // scaling for precision
   for (int i = 0; i < channels; i++)
     for (int j = 0; j < frame_size; j++){
-      out[i][j] /= 32767.0;
+      out[i][j] /= MATLAB_scale;
     }
 
     /*** Window ***/
@@ -229,7 +231,7 @@ void STFT::stft(double** in, double** out,int target_channels){
   // scaling for precision
   for (int i = 0; i < target_channels; i++)
     for (int j = 0; j < frame_size; j++){
-      out[i][j] /= 32767.0;
+      out[i][j] /= MATLAB_scale;
     }
 
     /*** Window ***/
@@ -283,7 +285,7 @@ void STFT:: stft(short* in_1, short* in_2, short* in_3, int length, double** out
     // scaling for precision
     for (i = 0; i < channels; i++)
         for (j = 0; j < frame_size; j++)
-            out[i][j] /= 32767.0;
+            out[i][j] /= MATLAB_scale;
 
     /*** Window ***/
     hw->Process(out, channels);

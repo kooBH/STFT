@@ -4,10 +4,11 @@
 #include <cmath>
 #include <cstdio>
 
-#define M_PI 3.14159265358979323846
-
 class HannWindow {
+  int cnt = 0;
 private:
+    // MATLAB 'pi'
+    const double M_PI = 3.141592653589793;
     double *hann;
     int shift_size;
     int frame_size;
@@ -66,15 +67,19 @@ inline HannWindow::HannWindow(int _frame_size, int _shift_size) {
     for (i = 0; i < frame_size; i++)
       tmp += hann[i] * hann[i];
     tmp /= shift_size;
+    tmp = std::sqrt(tmp);
 
     for (i = 0; i < frame_size; i++)
-      hann[i] /= std::sqrt(tmp);
+      hann[i] /= tmp;
+
+    
 }
 
 inline HannWindow::~HannWindow() { delete[] hann; }
 
 inline void HannWindow::Process(double **buffer,
                                    int channels) {
+  cnt++;
     int i, j;
     for (i = 0; i < channels; i++) {
 #pragma omp parallel for

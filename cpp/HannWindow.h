@@ -7,6 +7,9 @@
 class HannWindow {
   int cnt = 0;
 private:
+    // c standard defind 
+    //#define M_PI (3.14159265358979323846)::
+
     // MATLAB 'pi'
     const double MATLAB_pi= 3.141592653589793;
     double *hann;

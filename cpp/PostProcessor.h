@@ -89,7 +89,7 @@ inline short *PostProcessor::Overlap(double **in) {
 #pragma ivdep
         for (j = 0; j < static_cast<int>(channels); j++) {
             //output[i * channels + j] = (short)(buf[j][i] * 32767);
-            output[i * channels + j] = static_cast<short>(buf[j][i] * 32767);
+            output[i * channels + j] = static_cast<short>(buf[j][i]);
 #ifndef NDEBUG
 // printf("Overlap::buf[%d][%d]= %lf\n",j,i,buf[j][i]);
 #endif
@@ -116,7 +116,7 @@ inline short *PostProcessor::Overlap(double *in) {
 
   // Distribution for Wav format
   for (i = 0; i < static_cast<int>(shift_size); i++) {
-      output[i] = static_cast<short>(buf[0][i] * 32767);
+      output[i] = static_cast<short>(buf[0][i]);
   }
 
   return output;

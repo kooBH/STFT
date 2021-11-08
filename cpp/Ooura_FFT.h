@@ -316,6 +316,7 @@ inline void dfst(int, double *, double *, int *, double *);
 inline void makewt(int nw, int* ip, double* w);
 inline void makect(int nc, int* ip, double* c);
 inline void bitrv2(int n, int* ip, double* a);
+inline void bitrv2conj(int n, int *ip, double *a);
 inline void cftfsub(int n, double* a, double* w);
 inline void cftbsub(int n, double* a, double* w);
 inline void rftfsub(int n, double* a, int nc, double* c);
@@ -323,6 +324,10 @@ inline void rftbsub(int n, double* a, int nc, double* c);
 
 inline void cft1st(int n, double* a, double* w);
 inline void cftmdl(int n, int l, double* a, double* w);
+
+
+inline void dctsub(int n, double *a, int nc, double *c);
+inline void dstsub(int n, double *a, int nc, double *c);
 
 inline Ooura_FFT::Ooura_FFT(int _frame_size, int _channels){
     frame_size = _frame_size;
@@ -503,11 +508,6 @@ inline void Ooura_FFT::SingleiFFT(double *data) {
     }
 }
 inline void cdft(int n, int isgn, double *a, int *ip, double *w) {
-    void makewt(int nw, int *ip, double *w);
-    void bitrv2(int n, int *ip, double *a);
-    void bitrv2conj(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
 
     if (n > (ip[0] << 2)) {
         makewt(n >> 2, ip, w);
@@ -526,13 +526,6 @@ inline void cdft(int n, int isgn, double *a, int *ip, double *w) {
 }
 
 inline void rdft(int n, int isgn, double *a, int *ip, double *w) {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void rftbsub(int n, double *a, int nc, double *c);
     int nw, nc;
     double xi;
 
@@ -571,14 +564,6 @@ inline void rdft(int n, int isgn, double *a, int *ip, double *w) {
 }
 
 inline void ddct(int n, int isgn, double *a, int *ip, double *w) {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void rftbsub(int n, double *a, int nc, double *c);
-    void dctsub(int n, double *a, int nc, double *c);
     int j, nw, nc;
     double xr;
 
@@ -628,14 +613,7 @@ inline void ddct(int n, int isgn, double *a, int *ip, double *w) {
 }
 
 inline void ddst(int n, int isgn, double *a, int *ip, double *w) {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void cftbsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void rftbsub(int n, double *a, int nc, double *c);
-    void dstsub(int n, double *a, int nc, double *c);
+
     int j, nw, nc;
     double xr;
 
@@ -685,12 +663,7 @@ inline void ddst(int n, int isgn, double *a, int *ip, double *w) {
 }
 
 inline void dfct(int n, double *a, double *t, int *ip, double *w) {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void dctsub(int n, double *a, int nc, double *c);
+
     int j, k, l, m, mh, nw, nc;
     double xr, xi, yr, yi;
 
@@ -779,12 +752,7 @@ inline void dfct(int n, double *a, double *t, int *ip, double *w) {
 }
 
 inline void dfst(int n, double *a, double *t, int *ip, double *w) {
-    void makewt(int nw, int *ip, double *w);
-    void makect(int nc, int *ip, double *c);
-    void bitrv2(int n, int *ip, double *a);
-    void cftfsub(int n, double *a, double *w);
-    void rftfsub(int n, double *a, int nc, double *c);
-    void dstsub(int n, double *a, int nc, double *c);
+
     int j, k, l, m, mh, nw, nc;
     double xr, xi, yr, yi;
 
@@ -866,7 +834,6 @@ inline void dfst(int n, double *a, double *t, int *ip, double *w) {
 /* -------- initializing routines -------- */
 
 inline void makewt(int nw, int *ip, double *w) {
-    void bitrv2(int n, int *ip, double *a);
     int j, nwh;
     double delta, x, y;
 
@@ -1118,8 +1085,6 @@ inline void bitrv2conj(int n, int *ip, double *a) {
 }
 
 inline void cftfsub(int n, double *a, double *w) {
-    void cft1st(int n, double *a, double *w);
-    void cftmdl(int n, int l, double *a, double *w);
     int j, j1, j2, j3, l;
     double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 
@@ -1168,8 +1133,6 @@ inline void cftfsub(int n, double *a, double *w) {
 }
 
 inline void cftbsub(int n, double *a, double *w) {
-    void cft1st(int n, double *a, double *w);
-    void cftmdl(int n, int l, double *a, double *w);
     int j, j1, j2, j3, l;
     double x0r, x0i, x1r, x1i, x2r, x2i, x3r, x3i;
 

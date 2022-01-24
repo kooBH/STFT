@@ -1,162 +1,226 @@
-
-
-// librosa-Slaney style mel-filter bank
-// https://librosa.org/doc/main/_modules/librosa/filters.html#mel  
-//
-
 /*
-% librosa - Slaney-style
-% https://librosa.org/doc/main/_modules/librosa/filters.html#mel
-% confirmed exact output with librosa default mel-filterbank
+ auther : https://github.com/kooBH
+ 
+ librosa - Slaney-style
+ https://librosa.org/doc/main/_modules/librosa/filters.html#mel
+ confirmed exact output with librosa default mel-filterbank
 
-%{
-Note that there are different ways to compute MFCC
-@article{article,
-author = {Ganchev, Todor and Fakotakis, Nikos and George, Kokkinakis},
-year = {2005},
-month = {01},
-pages = {},
-title = {Comparative evaluation of various MFCC implementations on the speaker verification task},
-volume = {1},
-journal = {Proceedings of the SPECOM}
-}
-%}
+ Note that there are different ways to compute MFCC.
 
+ + reference : 
+  @article{article,
+  author = {Ganchev, Todor and Fakotakis, Nikos and George, Kokkinakis},
+  year = {2005},
+  month = {01},
+  pages = {},
+  title = {Comparative evaluation of various MFCC implementations on the speaker verification task},
+  volume = {1},
+  journal = {Proceedings of the SPECOM}
+  }
 
-close all;
-clear
-
-fs = 16000;
-nfft = 512;
-
-nhfft = 257;
-n_mels = 40;
-F = linspace(0,fs/2,nhfft);
-
-%% fft_frequencies()
-fftfreqs  = linspace(0, fs / 2, int32(1 + nfft / 2));
-
-%% mel_frequencies()
-min_mel  = hz_to_mel(0);
-max_mel  = hz_to_mel(8000);
-mels  = linspace(min_mel,max_mel,n_mels+2);
-mel_f  = mel_to_hz(mels);
-
-fdiff = diff(mel_f);
-
-%  ramps = np.subtract.outer(mel_f, fftfreqs)
-ramps  = mel_f' - fftfreqs;
-
-weights = zeros(n_mels,nhfft);
-
-for i = 1:n_mels
-    % lower and upper slopes for all bins
-    lower = -ramps(i,:) / fdiff(i);
-    upper = ramps(i + 2,:) / fdiff(i + 1);
-
-    % .. then intersect them with each other and zero
-    weights(i,:) = max(0, min(lower, upper));
-end
-
-% Slaney-style mel is scaled to be approx constant energy per channel
-enorm = 2.0 ./ (mel_f(3 : n_mels + 2) - mel_f(1:n_mels));
-weights = times(weights,enorm');
-
-disp(max(max(weights)));
-
-figure()
-hold on;
-%% Construct filter bank
-for i = 1:n_mels
-    plot(weights(i,:));
-end
-hold off;
-title("mel weights");
-
-
-function w = triangle(N)
-    if rem(N,2) % odd
-        w_temp = 2*(1:(N+1)/2)/(N+1);
-        w = [w_temp w_temp((N-1)/2:-1:1)]';
-    else % even
-        w_temp = (2*(1:(N+1)/2)-1)/N;
-        w = [w_temp w_temp(N/2:-1:1)]';
-    end
-
-end
-
-function mels = hz_to_mel(f)
-
-% Fill in the linear part
-f_min = 0.0;
-f_sp = 200.0 / 3;
-
-mels = (f - f_min) / f_sp;
-
-% Fill in the log-scale part
-min_log_hz = 1000.0;  % beginning of log region (Hz)
-min_log_mel = (min_log_hz - f_min) / f_sp;  % same (Mels)
-logstep = log(6.4) / 27.0;  % step size for log region
-
-if f >= min_log_hz
-    mels = min_log_mel + log(f / min_log_hz) / logstep;
-end
-
-end
-
-function freqs = mel_to_hz(mels)
-
-    % Fill in the linear scale
-    f_min = 0.0;
-    f_sp = 200.0 / 3;
-    freqs = f_min + f_sp * mels;
-
-    % And now the nonlinear scale
-    min_log_hz = 1000.0;  % beginning of log region (Hz)
-    min_log_mel = (min_log_hz - f_min) / f_sp;  % same (Mels)
-    logstep = log(6.4) / 27.0;  % step size for log region
-
-    if ~isscalar(mels)
-        % If we have vector data, vectorize
-        log_t = mels >= min_log_mel;
-        freqs(log_t) = min_log_hz * exp(logstep * (mels(log_t) - min_log_mel));
-    elseif mels >= min_log_mel
-        % If we have scalar data, check directly
-        freqs = min_log_hz * np.exp(logstep * (mels - min_log_mel));
-    end
-end
 */
+
+#include <cmath>
 
 class mel{
 
 private:
   int n_mels;
   int sr;
-  int fft;
+  int half_sr;
+  int nfft;
   int nhfft;
 
-  double** filter_bank;
+  double* freq_fft; // [nhfft]
+  double* freq_mel; // [n_mels+2]
+  double* diff_mel; // [n_mels+1]
+
+  double** ramps; //[n_mels+2][nhfft]
+  double** filter_bank; ////[n_mels][nhfft]
+  
+
+  const double f_sp = 200.0 / 3;
+  const double logstep = 0.068751777420949; // log(6.4)/27
+
+  inline void hz_to_mel(double* f,int size);
+  inline double hz_to_mel(double f);
+  inline void mel_to_hz(double* m,int size);
+  inline double mel_to_hz(double m);
 public : 
-  inline mel();
+  inline mel(int,int,int);
   inline ~mel();
 
-  inline int filter(double**stft,double**out);
+  // TODO : more variety usage
+  inline int filter(double*stft,double*out);
 
-  inline static double** filterBank(int sr,int n_mels, int nfft);
 };
 
-mel::mel() {
+mel::mel(int sr_=16000,int nfft_=512, int n_mels_=40) {
+  sr = sr_;
+  nfft = nfft_;
+  n_mels = n_mels_;
 
+  nhfft = int(nfft / 2) + 1;
+
+  freq_fft = new double[nhfft];
+  freq_mel = new double[n_mels+2];
+
+  //[M] fftfreqs  = linspace(0, fs / 2, int32(1 + nfft / 2));
+  for (int i = 0; i < nhfft; i++) {
+    freq_fft[i] = i * ((sr/2) / (double)(nhfft-1));
+  }
+
+  double min_mel = hz_to_mel(0);
+  double max_mel = hz_to_mel(sr/2);
+  //[M] mels  = linspace(min_mel,max_mel,n_mels+2);
+  for (int i = 0; i < n_mels + 2; i++) {
+    freq_mel[i] = min_mel + i * max_mel / (n_mels + 2 -1);
+  }
+  mel_to_hz(freq_mel, n_mels + 2);
+
+  //[M] fdiff = diff(mel_f);
+  diff_mel = new double[n_mels + 1];
+  for (int i = 0; i < n_mels + 1; i++) {
+    diff_mel[i] = freq_mel[i + 1] - freq_mel[i];
+  }
+ 
+  //[P] ramps = np.subtract.outer(mel_f, fftfreqs)
+  //[M] ramps  = mel_f' - fftfreqs;
+  ramps = new double* [n_mels + 2];
+  for (int i = 0; i < n_mels + 2; i++) {
+    ramps[i] = new double[nhfft];
+  }
+
+  for (int i = 0; i < nhfft; i++) {
+    for (int j = 0; j < n_mels + 2; j++) {
+      ramps[j][i] = freq_mel[j] - freq_fft[i];
+    }
+  }
+
+  filter_bank = new double* [n_mels];
+  for (int i = 0; i < n_mels; i++)
+    filter_bank[i] = new double[nhfft];
+
+  double lower = 0;
+  double upper = 0;
+  for (int i = 0; i < n_mels; i++) {
+    for (int j = 0; j < nhfft; j++) {
+      // lower and upper slopes for all bins
+      lower = -ramps[i][j] / diff_mel[i];
+      upper = ramps[i + 2][j] / diff_mel[i + 1];
+
+      // .. then intersect them with each other and zero
+      filter_bank[i][j] = std::fmax(0.0, std::fmin(lower, upper));
+    }
+  }
+
+  // Slaney - style mel is scaled to be approx constant energy per channel
+  double enorm = 0.0;
+  for (int i = 0; i < n_mels; i++) {
+    enorm = 2.0 / (freq_mel[i + 2] - freq_mel[i]);
+    for (int j = 0; j < nhfft; j++)
+      filter_bank[i][j] *= enorm;
+  }
 }
 
 mel::~mel() {
+  delete[] freq_fft;
+  delete[] freq_mel;
+  delete[] diff_mel;
+
+  for (int i = 0; i < n_mels + 2;i++)
+    delete[] ramps[i];
+  delete[] ramps;
+  for (int i = 0; i < n_mels;i++)
+    delete[] filter_bank[i];
+  delete[] filter_bank;
+
+
 
 }
 
-int mel::filter(double** stft, double** out) {
+int mel::filter(double* stft, double* out) {
+  // TODO : sparse matrix operation
+  for (int i = 0; i < n_mels; i++) {
+    out[i] = 0;
+    for (int j = 0; j < nhfft; j++) {
+      out[i] += stft[j] * filter_bank[i][j];
+    }
+  }
+
+  // TODO : BLAS 
 
 }
 
-double** mel::filterBank(int sr_, int n_mels_, int nfft_) {
+void mel::hz_to_mel(double* f, int size) {
 
+  // fill in the linear part
+  double f_min = 0.0;
+
+  //  Fill in the log-scale part
+  double min_log_hz = 1000.0; // beginning of log region (Hz)
+  double min_log_mel = (min_log_hz - f_min) / f_sp; // same (Melz)
+
+  for (int i = 0; i < size; i++) {
+    if (f[i] >= min_log_hz) {
+      f[i] = min_log_mel + std::log(f[i] / min_log_hz) / logstep;
+    }
+    else {
+      f[i] = (f[i] - f_min) / f_sp;
+    
+    }
+  }
 }
+
+double mel::hz_to_mel(double f) {
+  // fill in the linear part
+  double f_min = 0.0;
+
+  //  Fill in the log-scale part
+  double min_log_hz = 1000.0; // beginning of log region (Hz)
+  double min_log_mel = (min_log_hz - f_min) / f_sp; // same (Melz)
+
+  if (f >= min_log_hz) {
+    return min_log_mel + std::log(f / min_log_hz) / logstep;
+  }
+  else {
+    return (f - f_min) / f_sp;
+  }
+}
+
+void mel::mel_to_hz(double* m, int size) {
+
+    // Fill in the linear scale
+    double f_min = 0.0;
+
+    // And now the nonlinear scale
+    double min_log_hz = 1000.0;  // beginning of log region (Hz)
+    double min_log_mel = (min_log_hz - f_min) / f_sp;  // same (Mels)
+
+    for (int i = 0; i < size; i++) {
+      if (m[i] >= min_log_mel) {
+        m[i] = min_log_hz * std::exp(logstep * (m[i] - min_log_mel));
+      }
+      else {
+        m[i] = f_min + f_sp * m[i];
+      }
+    }
+}
+
+double mel::mel_to_hz(double m) {
+
+    // Fill in the linear scale
+    double f_min = 0.0;
+
+    // And now the nonlinear scale
+    double min_log_hz = 1000.0;  // beginning of log region (Hz)
+    double min_log_mel = (min_log_hz - f_min) / f_sp;  // same (Mels)
+
+    if (m >= min_log_mel) {
+      return min_log_hz * std::exp(logstep * (m - min_log_mel));
+    }
+    else {
+      return f_min + f_sp * m;
+    }
+}
+

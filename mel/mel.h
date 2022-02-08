@@ -1,5 +1,5 @@
 /*
- auther : https://github.com/kooBH
+ by https://github.com/kooBH
  
  librosa - Slaney-style
  https://librosa.org/doc/main/_modules/librosa/filters.html#mel

@@ -47,11 +47,13 @@ private:
   inline void mel_to_hz(double* m,int size);
   inline double mel_to_hz(double m);
 public : 
-  inline mel(int,int,int);
+  inline mel(int samplerate,int n_fft,int n_mels);
   inline ~mel();
 
   // TODO : more variety usage
-  inline int filter(double*stft,double*out);
+  
+  // mag[nhfft] out[n_mels]
+  inline int filter(double*mag,double*out);
 
 };
 
@@ -139,12 +141,12 @@ mel::~mel() {
 
 }
 
-int mel::filter(double* stft, double* out) {
+int mel::filter(double* mag, double* out) {
   // TODO : sparse matrix operation
   for (int i = 0; i < n_mels; i++) {
     out[i] = 0;
     for (int j = 0; j < nhfft; j++) {
-      out[i] += stft[j] * filter_bank[i][j];
+      out[i] += mag[j] * filter_bank[i][j];
     }
   }
 

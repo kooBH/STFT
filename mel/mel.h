@@ -51,7 +51,7 @@ public :
   inline ~mel();
 
   // TODO : more variety usage
-  inline int filter(double*stft,double*out);
+  inline void filter(double*stft,double*out);
 
 };
 
@@ -139,7 +139,7 @@ mel::~mel() {
 
 }
 
-int mel::filter(double* stft, double* out) {
+void mel::filter(double* stft, double* out) {
   // TODO : sparse matrix operation
   for (int i = 0; i < n_mels; i++) {
     out[i] = 0;

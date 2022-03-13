@@ -168,8 +168,13 @@ void STFT::stft(short* in, double* out){
     for (i = 0; i < shift_size; i++)
         buf[0][ol + i] = static_cast<double>(in[i]);
 
+
     memcpy(out, buf[0], sizeof(double) * frame_size);
-    
+
+    // scaling for precision
+    for (int j = 0; j < frame_size; j++)
+      out[j] /= MATLAB_scale;
+
     /*** Window ***/
     hw->Process(out);
 

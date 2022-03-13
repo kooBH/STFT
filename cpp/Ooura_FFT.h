@@ -402,6 +402,7 @@ void Ooura_FFT::FFT(double ** data, int target_channels){
 	
 }
 
+/* multi channel data in single pointer buffer
 inline void Ooura_FFT::FFT(double *data) {
     int j;
 #pragma omp parallel for
@@ -422,6 +423,23 @@ inline void Ooura_FFT::FFT(double *data) {
         t[frame_size] = a[j][1];
         t[frame_size + 1] = 0;
     }
+}
+*/
+
+inline void Ooura_FFT::FFT(double *data) {
+    ip[0][0] = 0;
+    for (int i = 0; i < frame_size; i++)
+        a[0][i] = data[i];
+
+    rdft(frame_size, 1, a[0], ip[0], w[0]);
+
+    for (int i = 0; i < frame_size; i += 2) {
+        data[i] = a[0][i];
+        data[i + 1] = -a[0][i + 1];
+    }
+    data[1] = 0;
+    data[frame_size] = a[0][1];
+    data[frame_size + 1] = 0;
 }
 
 inline void Ooura_FFT::iFFT(double **data) {

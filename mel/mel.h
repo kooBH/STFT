@@ -1,5 +1,5 @@
 /*
- auther : https://github.com/kooBH
+ by https://github.com/kooBH
  
  librosa - Slaney-style
  https://librosa.org/doc/main/_modules/librosa/filters.html#mel
@@ -51,9 +51,9 @@ public :
   inline ~mel();
 
   // TODO : more variety usage
-  
-  // mag[nhfft] out[n_mels]
-  inline int filter(double*mag,double*out);
+
+  inline void filter(double*stft,double*out);
+
 
 };
 
@@ -141,7 +141,8 @@ mel::~mel() {
 
 }
 
-int mel::filter(double* mag, double* out) {
+
+void mel::filter(double* stft, double* out) {
   // TODO : sparse matrix operation
   for (int i = 0; i < n_mels; i++) {
     out[i] = 0;

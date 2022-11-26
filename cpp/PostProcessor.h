@@ -27,6 +27,8 @@ public:
     inline short *Array2WavForm(double **in);
 
     inline short *Frame2Wav(double *in);
+    inline short *Get_output(); 
+    inline double** Get_buf(); 
 };
 
 inline PostProcessor::PostProcessor(uint32_t _frame_size,
@@ -141,5 +143,13 @@ inline short *PostProcessor::Frame2Wav(double *in) {
     }
     return output;
 }
+
+short* PostProcessor::Get_output(){
+    return output;    
+}
+double** PostProcessor::Get_buf(){
+    return buf;    
+}
+
 
 #endif

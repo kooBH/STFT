@@ -22,6 +22,23 @@ Since, it is fastest FFT in a single header file.
 But, sometimes (usually  not), there are errors between MATLAB FFT output and Ooura FFT output.     
 If you need to perfectly same output as MATLAB, you have to use other FFT library.  
 
+## CMake
+
+```CMAKE
+...
+set(SRC)
+set(INCL)
+
+# it will append sources and paths to SRC and INCL
+include(${PATH_TO_STFT}/STFT/cpp/STFT_cpp.cmake )  
+
+...
+
+add_executable(${PROJECT_NAME} ${SRC})
+target_include_directories(${PROJECT_NAME}    PRIVATE    ${INCL}  )
+
+```
+
 ## EXAMPLE
 
 + Directly from buffer  

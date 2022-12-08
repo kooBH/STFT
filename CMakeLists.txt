@@ -10,10 +10,17 @@ else(MSVC)
     )
 endif()
 
-set(INCL WAV)
+set(INCL 
+  WAV
+  cpp/
+  )
 set(COMPILE_OPTION)
-set(SRC 
-  test.cpp 
+set(SRC
+  test.cpp
+  cpp/HannWindow.cpp
+  cpp/Ooura_FFT.cpp
+  cpp/PostProcessor.cpp
+  cpp/STFT.cpp
   cpp/HannWindow.h
   cpp/Ooura_FFT.h
   cpp/PostProcessor.h

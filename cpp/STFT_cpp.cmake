@@ -1,4 +1,8 @@
 list(APPEND SRC 
+  ${CMAKE_CURRENT_LIST_DIR}/HannWindow.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/Ooura_FFT.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/PostProcessor.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/STFT.cpp
   ${CMAKE_CURRENT_LIST_DIR}/HannWindow.h
   ${CMAKE_CURRENT_LIST_DIR}/Ooura_FFT.h
   ${CMAKE_CURRENT_LIST_DIR}/PostProcessor.h

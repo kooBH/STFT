@@ -43,37 +43,51 @@ inline HannWindow::HannWindow(int _frame_size, int _shift_size) {
 
     hann = new double[frame_size];
 
-    /* Ver 1 */
-    /*
-    switch (frame_size / shift_size) {
-    case 4:
-        hann[0] = 0.0;
-        for (i = 1; i < frame_size; ++i)
-            hann[i] = 0.5 * (1.0 - cos(2.0 * M_PI * (double)i / (double)frame_size));
-        tmp = sqrt((double)2 / 3);
-        for (i = 1; i < frame_size; i++)
-            hann[i] *= tmp;
-        break;
-    case 2:
-        for (i = 0; i < frame_size; i++)
-            hann[i] = sin(M_PI * (i + 0.5) / frame_size);
-        break;
+    if (frame_size / shift_size == 4) {
+		/* Ver 1 */
+	/*
+	switch (frame_size / shift_size) {
+	case 4:
+		hann[0] = 0.0;
+		for (i = 1; i < frame_size; ++i)
+			hann[i] = 0.5 * (1.0 - cos(2.0 * M_PI * (double)i / (double)frame_size));
+		tmp = sqrt((double)2 / 3);
+		for (i = 1; i < frame_size; i++)
+			hann[i] *= tmp;
+		break;
+	case 2:
+		for (i = 0; i < frame_size; i++)
+			hann[i] = sin(M_PI * (i + 0.5) / frame_size);
+		break;
+	}
+	*/
+
+	/* Ver 2 */
+	// win = hanning(frame_size,'periodic');
+		for (i = 0; i < frame_size; i++)
+			hann[i] = 0.5 * (1.0 - cos(2.0 * MATLAB_pi * (i / (double)frame_size)));
+
+		// win = win./sqrt(sum(win.^2)/shift_size);
+		for (i = 0; i < frame_size; i++)
+			tmp += hann[i] * hann[i];
+		tmp /= shift_size;
+		tmp = std::sqrt(tmp);
+
+		for (i = 0; i < frame_size; i++)
+			hann[i] /= tmp;
     }
-    */
+    else if (frame_size / shift_size == 2) {
+        // win = sin(pi * ([0:1:nwin-1]'+0.5) /nwin ); %1/2 shift
+        for (i = 0; i < frame_size; i++)
+            hann[i] = sin(MATLAB_pi * ((double)i + 0.5) / (double)frame_size);
+            
+    }
+    else {
+		printf("Error: frame_size / shift_size != 2 or 4\n");
+		exit(1);
+	}
 
-    /* Ver 2 */
-    // win = hanning(frame_size,'periodic');
-    for (i = 0; i < frame_size; i++)
-      hann[i] = 0.5 * (1.0 - cos(2.0 * MATLAB_pi* (i / (double)frame_size)));
-
-    // win = win./sqrt(sum(win.^2)/shift_size);
-    for (i = 0; i < frame_size; i++)
-      tmp += hann[i] * hann[i];
-    tmp /= shift_size;
-    tmp = std::sqrt(tmp);
-
-    for (i = 0; i < frame_size; i++)
-      hann[i] /= tmp;
+    
 
     
 }

@@ -16,7 +16,7 @@ set(SRC
   test.cpp 
   cpp/HannWindow.h
   cpp/Ooura_FFT.h
-  cpp/PostProcessor.h
+  cpp/OA.h
   cpp/STFT.h
   WAV/WAV.h
   )

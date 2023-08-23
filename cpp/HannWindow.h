@@ -82,6 +82,12 @@ inline HannWindow::HannWindow(int _frame_size, int _shift_size) {
             hann[i] = sin(MATLAB_pi * ((double)i + 0.5) / (double)frame_size);
             
     }
+    // no Overlap-Save
+    else if(shift_size == frame_size){
+      for (int i = 0; i < frame_size; i++) {
+        hann[i] = 1;
+      }
+    }
     else {
 		printf("Error: frame_size / shift_size != 2 or 4\n");
 		exit(1);

@@ -1,3 +1,8 @@
+/*
+  Overlap-Add for STFT
+*/
+
+
 #ifndef _H_AFTER_PROCESSOR_
 #define _H_AFTER_PROCESSOR_
 
@@ -5,7 +10,7 @@
 #include <cstdlib>
 #include <cstring>
 
-class PostProcessor {
+class OA {
 private:
     uint32_t frame_size;
     uint32_t shift_size;
@@ -17,10 +22,10 @@ private:
     uint32_t buf_offset;
 
 public:
-    inline PostProcessor(uint32_t _frame_size,
+    inline OA(uint32_t _frame_size,
                           uint32_t _shift_size,
                           uint32_t _channels);
-    inline ~PostProcessor();
+    inline ~OA();
 
     inline short *Overlap(double **in);
     inline short *Overlap(double *in);
@@ -31,7 +36,7 @@ public:
     inline double** Get_buf(); 
 };
 
-inline PostProcessor::PostProcessor(uint32_t _frame_size,
+inline OA::OA(uint32_t _frame_size,
                                       uint32_t _shift_size,
                                       uint32_t _channels) {
     int i;
@@ -53,7 +58,7 @@ inline PostProcessor::PostProcessor(uint32_t _frame_size,
         memset(buf[i], 0, frame_size * sizeof(double));
 }
 
-inline PostProcessor::~PostProcessor() {
+inline OA::~OA() {
     for (int i = 0; i < static_cast<int>(channels); i++)
         delete[] buf[i];
     delete[] buf;
@@ -69,7 +74,7 @@ inline PostProcessor::~PostProcessor() {
  * b4 c3 d2 e1    b4 + b3 + b2 + b1
  *
  * */
-inline short *PostProcessor::Overlap(double **in) {
+inline short *OA::Overlap(double **in) {
     int i, j;
     for (j = 0; j < static_cast<int>(channels); j++) {
 
@@ -101,7 +106,7 @@ inline short *PostProcessor::Overlap(double **in) {
 }
 
 
-inline short *PostProcessor::Overlap(double *in) {
+inline short *OA::Overlap(double *in) {
   int i;
     // Shift
     for (i = 0; i < static_cast<int>(frame_size - shift_size); i++)
@@ -124,7 +129,7 @@ inline short *PostProcessor::Overlap(double *in) {
   return output;
 }
 
-inline short *PostProcessor::Array2WavForm(double **in) {
+inline short *OA::Array2WavForm(double **in) {
     int i, j;
     for (i = 0; i < static_cast<int>(shift_size); i++) {
         for (j = 0; j < static_cast<int>(channels); j++) {
@@ -134,7 +139,7 @@ inline short *PostProcessor::Array2WavForm(double **in) {
     return output;
 }
 
-inline short *PostProcessor::Frame2Wav(double *in) {
+inline short *OA::Frame2Wav(double *in) {
     int i, j;
     for (i = 0; i < static_cast<int>(frame_size); i++) {
         for (j = 0; j < static_cast<int>(channels); j++) {
@@ -144,10 +149,10 @@ inline short *PostProcessor::Frame2Wav(double *in) {
     return output;
 }
 
-short* PostProcessor::Get_output(){
+short* OA::Get_output(){
     return output;    
 }
-double** PostProcessor::Get_buf(){
+double** OA::Get_buf(){
     return buf;    
 }
 

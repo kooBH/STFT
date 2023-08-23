@@ -3,7 +3,7 @@
 
 #include "Ooura_FFT.h"
 #include "HannWindow.h"
-#include "PostProcessor.h"
+#include "OA.h"
 
 class STFT{
   private : 
@@ -12,7 +12,7 @@ class STFT{
 
     HannWindow *hw;
     Ooura_FFT *fft;
-    PostProcessor *ap;
+    OA *ap;
 
     int channels;
     int frame_size;
@@ -75,7 +75,7 @@ STFT::STFT(int channels_,int frame_,int shift_){
 
   hw = new HannWindow(frame_size, shift_size);
   fft= new Ooura_FFT(frame_size, channels);
-  ap = new PostProcessor(frame_size, shift_size, channels);
+  ap = new OA(frame_size, shift_size, channels);
 
   buf =  new double*[channels];
   for(i=0;i<channels;i++){

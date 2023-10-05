@@ -8,7 +8,6 @@
 class STFT{
   private : 
     const double MATLAB_scale = 32768;
-    bool opt_scale = true;
 
     HannWindow *hw;
     Ooura_FFT *fft;
@@ -25,7 +24,6 @@ class STFT{
     inline STFT(int channels,int frame,int shift);
     inline ~STFT();
 
-    inline void set_opt_scale(bool);
     /* in from input device or file
     
       in : raw buffer from wav or mic
@@ -65,9 +63,6 @@ class STFT{
     inline void stft(short* in_1, short* in_2, short* in_3, int length, double** out);
 };
 
-void STFT::set_opt_scale(bool opt){
-  opt_scale=opt;
-}
 
 STFT::STFT(int channels_,int frame_,int shift_){
   int i;
@@ -133,8 +128,7 @@ void STFT::stft(short*in,int length,double**out){
     memcpy(out[i], buf[i], sizeof(double) * frame_size);
 
   // scaling for precision
-  if(opt_scale)
-    for (i = 0; i < channels; i++)
+  for (i = 0; i < channels; i++)
       for (j = 0; j < frame_size; j++)
         out[i][j] /= MATLAB_scale;
 
@@ -161,10 +155,9 @@ void STFT::istft(double**in,short*out){
   hw->Process(in, channels);
 
   // scaling for precision
-  if(opt_scale)
-    for (int i = 0; i < channels; i++)
-      for (int j = 0; j < frame_size; j++)
-        in[i][j] *= MATLAB_scale;
+  for (int i = 0; i < channels; i++)
+    for (int j = 0; j < frame_size; j++)
+      in[i][j] *= MATLAB_scale;
 
   /*** Output ***/
   memcpy(out,ap->Overlap(in),sizeof(short)*shift_size*channels);
@@ -185,9 +178,8 @@ void STFT::stft(short* in, double* out){
     memcpy(out, buf[0], sizeof(double) * frame_size);
 
     // scaling for precision
-    if(opt_scale)
-      for (int j = 0; j < frame_size; j++)
-        out[j] /= MATLAB_scale;
+    for (int j = 0; j < frame_size; j++)
+      out[j] /= MATLAB_scale;
 
     /*** Window ***/
     hw->Process(out);
@@ -222,16 +214,12 @@ void STFT::stft(double** in, double** out) {
       }
       for (int i = 0; i < shift_size; i++){
         buf[j][ol + i] = in[j][i];
-        memcpy(out[j], buf[j], sizeof(double) * frame_size);
       }
+        memcpy(out[j], buf[j], sizeof(double) * frame_size);
     }
 
   // scaling for precision
   for (int i = 0; i < channels; i++)
-    if(opt_scale)
-      for (int j = 0; j < frame_size; j++){
-        out[i][j] /= MATLAB_scale;
-      }
 
     /*** Window ***/
     hw->Process(out,channels);
@@ -249,17 +237,12 @@ void STFT::stft(double** in, double** out,int target_channels){
       }
       for (int i = 0; i < shift_size; i++){
         buf[j][ol + i] = in[j][i];
-        memcpy(out[j], buf[j], sizeof(double) * frame_size);
       }
+        memcpy(out[j], buf[j], sizeof(double) * frame_size);
     }
 
   // scaling for precision
   for (int i = 0; i < target_channels; i++)
-    if(opt_scale)
-      for (int j = 0; j < frame_size; j++){
-        out[i][j] /= MATLAB_scale;
-      }
-
     /*** Window ***/
     hw->Process(out,target_channels);
 
@@ -274,9 +257,8 @@ void STFT::istft(double* in, short* out) {
   /*** Window ***/
   hw->Process(in);
 
-  if(opt_scale)
-    for (int j = 0; j < frame_size; j++)
-      in[j] *= MATLAB_scale;
+  for (int j = 0; j < frame_size; j++)
+    in[j] *= MATLAB_scale;
 
   /*** Output ***/
   memcpy(out,ap->Overlap(in),sizeof(short)*shift_size);
@@ -288,9 +270,8 @@ void STFT::istft(double* in, double* out) {
   /*** Window ***/
   hw->Process(in);
 
-  if(opt_scale)
-    for (int j = 0; j < frame_size; j++)
-      in[j] *= MATLAB_scale;
+  for (int j = 0; j < frame_size; j++)
+    in[j] *= MATLAB_scale;
 
   /*** Output ***/
   ap->Overlap(in);
@@ -307,10 +288,9 @@ void STFT::istft(double**in,double**out){
   hw->Process(in, channels);
 
   // scaling for precision
-  if(opt_scale)
-    for (int i = 0; i < channels; i++)
-      for (int j = 0; j < frame_size; j++)
-        in[i][j] *= MATLAB_scale;
+  for (int i = 0; i < channels; i++)
+    for (int j = 0; j < frame_size; j++)
+      in[i][j] *= MATLAB_scale;
 
   /*** Output ***/
   for (int i = 0; i < channels; i++)
@@ -329,8 +309,9 @@ void STFT::stft(float** in, double** out) {
         buf[j][ol + i] = static_cast<double>(in[j][i]);
       }
       
-      for(int i = 0; i < frame_size; i++)
+      for (int i = 0; i < frame_size; i++)
         out[j][i] = buf[j][i];
+      memcpy(out[j], buf[j], sizeof(double) * frame_size);
     }
 
     /*** Window ***/

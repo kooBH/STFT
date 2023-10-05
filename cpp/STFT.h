@@ -45,6 +45,9 @@ class STFT{
     inline void istft(double** in, double** out);
 	  inline void stft(double** in, double** out,int target_channels);
 
+    inline void stft(float** in, double** out);
+    inline void istft(double** in, float** out);
+
     /* Single-Channel STFT   
       in : 1 x shift
       out : 1 x frame_size + 2 (half FFT in complex)
@@ -314,5 +317,42 @@ void STFT::istft(double**in,double**out){
     for(int j=0;j<shift_size;j++)
       out[i][j] = ap->Get_buf()[i][j];
 }
+
+void STFT::stft(float** in, double** out) {
+	/*** Shfit & Copy***/
+#pragma omp parallel for
+    for (int j = 0; j < channels; j++) {
+      for (int i = 0; i < ol; i++) {
+        buf[j][i] = buf[j][i + shift_size];
+      }
+      for (int i = 0; i < shift_size; i++){
+        buf[j][ol + i] = static_cast<double>(in[j][i]);
+      }
+      
+      for(int i = 0; i < frame_size; i++)
+        out[j][i] = buf[j][i];
+    }
+
+    /*** Window ***/
+    hw->Process(out,channels);
+
+    /*** FFT ***/
+    fft->FFT(out);
+}
+
+void STFT::istft(double**in,float**out){
+  /*** iFFT ***/
+  fft->iFFT(in);
+
+  /*** Window ***/
+  hw->Process(in, channels);
+
+  /*** Output ***/
+  for (int i = 0; i < channels; i++)
+    for(int j=0;j<shift_size;j++)
+      out[i][j] = static_cast<float>(ap->Get_buf()[i][j]);
+}
+
+
 
 #endif

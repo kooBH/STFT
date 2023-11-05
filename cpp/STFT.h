@@ -1,3 +1,9 @@
+/*
+STFT - Short Time Fourier Transoform cpp
+https://github.com/kooBH/STFT
+nine4409@sogang.ac.kr
+*/
+
 #ifndef _H_STFT_
 #define _H_STFT_
 

@@ -5,9 +5,12 @@ int main(){
   
   const int ch = 1;
   const int rate = 16000;
-  const int frame = 512;
-  const int shift = 128;  
+  const int frame = 320;
+  const int shift = 80;  
   int length;
+
+
+
 
   WAV input;
   WAV output(ch,rate);
@@ -21,7 +24,8 @@ int main(){
   f_stft = fopen("../data/male_1_stft.bin", "wb");
 
 
-  short buf_in[ch*shift];
+  //short buf_in[ch*shift];
+  short buf_in[512];
   double **data;
   short buf_out[ch*shift];
 

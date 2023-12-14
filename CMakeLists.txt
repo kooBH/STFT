@@ -18,6 +18,8 @@ set(SRC
   cpp/Ooura_FFT.h
   cpp/OA.h
   cpp/STFT.h
+  cpp/DFT.h
+  cpp/FFT.h
   WAV/WAV.h
   )
 

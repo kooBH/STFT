@@ -2,7 +2,8 @@
 
 STFT(Short Time Fourier Transform), ISTFT(Inverse - Short Time Fourier Transform) for wav,mic input  
 
-provides 25%,50% overlap STFT process.  
+provides 25%,50% overlap STFT process.   
+Using DFT, iDFT when n_fft(frame_size) is not power of 2.  
 
 ## NOTE
 

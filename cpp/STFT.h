@@ -8,6 +8,7 @@ nine4409@sogang.ac.kr
 #define _H_STFT_
 
 #include "Ooura_FFT.h"
+#include "DFT.h"
 #include "HannWindow.h"
 #include "OA.h"
 
@@ -16,7 +17,7 @@ class STFT{
     const double MATLAB_scale = 32768;
 
     HannWindow *hw;
-    Ooura_FFT *fft;
+    FFTbase*fft;
     OA *ap;
 
     int channels;
@@ -25,6 +26,19 @@ class STFT{
     int ol;
 
     double**buf;
+
+    bool is_power_of_two(int num) {
+      if (num <= 0) {
+        return false;
+      }
+      while (num > 1) {
+        if (num % 2 != 0) {
+          return false;
+        }
+        num /= 2;
+      }
+      return true;
+    }
 
   public :
     inline STFT(int channels,int frame,int shift);
@@ -78,7 +92,15 @@ STFT::STFT(int channels_,int frame_,int shift_){
   ol = frame_size - shift_size;
 
   hw = new HannWindow(frame_size, shift_size);
-  fft= new Ooura_FFT(frame_size, channels);
+
+  if (is_power_of_two(frame_size)) {
+    printf("STFT::FFT\n");
+    fft = new Ooura_FFT(frame_size, channels);
+  }
+  else {
+    printf("STFT::DFT\n");
+    fft = new DFTbrute(frame_size, channels);
+  }
   ap = new OA(frame_size, shift_size, channels);
 
   buf =  new double*[channels];

@@ -68,6 +68,7 @@ inline HannWindow::HannWindow(int _frame_size, int _shift_size) {
 			hann[i] = 0.5 * (1.0 - cos(2.0 * MATLAB_pi * (i / (double)frame_size)));
 
 		// win = win./sqrt(sum(win.^2)/shift_size);
+	    /* Where does it come from?
 		for (i = 0; i < frame_size; i++)
 			tmp += hann[i] * hann[i];
 		tmp /= shift_size;
@@ -75,6 +76,7 @@ inline HannWindow::HannWindow(int _frame_size, int _shift_size) {
 
 		for (i = 0; i < frame_size; i++)
 			hann[i] /= tmp;
+	    */
     }
     else if (frame_size / shift_size == 2) {
         // win = sin(pi * ([0:1:nwin-1]'+0.5) /nwin ); %1/2 shift

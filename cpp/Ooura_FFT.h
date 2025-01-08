@@ -5,7 +5,7 @@
 #include <cmath>
 
 // It is okay to not inherit from FFTbase (FFT.h)
-class Ooura_FFT : public FFTbase{
+class Ooura_FFT : public FFTbase {
 private:
     int frame_size;
     int channels;

@@ -2,6 +2,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(mel_test)
 
+include(${CMAKE_CURRENT_LIST_DIR}/../cpp/STFT_cpp.cmake)
+
 if(MSVC)
   
 else(MSVC)

@@ -1,4 +1,4 @@
-#ifndef  _H_FFT_BASE_
+#ifndef _H_FFT_BASE_
 #define _H_FFT_BASE_
 
 class FFTbase {

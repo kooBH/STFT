@@ -94,11 +94,11 @@ STFT::STFT(int channels_,int frame_,int shift_){
   hw = new HannWindow(frame_size, shift_size);
 
   if (is_power_of_two(frame_size)) {
-    printf("STFT::FFT\n");
+    //printf("STFT::FFT\n");
     fft = new Ooura_FFT(frame_size, channels);
   }
   else {
-    printf("STFT::DFT\n");
+    //printf("STFT::DFT\n");
     fft = new DFTbrute(frame_size, channels);
   }
   ap = new OA(frame_size, shift_size, channels);

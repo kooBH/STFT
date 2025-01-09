@@ -9,7 +9,7 @@ nine4409@sogang.ac.kr
 
 #include "Ooura_FFT.h"
 #include "DFT.h"
-#include "HannWindow.h"
+#include "WindowFunction.h"
 #include "OA.h"
 
 class STFT{

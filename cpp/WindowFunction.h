@@ -102,12 +102,12 @@ inline WindowFunction::WindowFunction(int frame_size_, int shift_size_,int windo
     exit(-1);
   }
 
-  window = new double[window_length];
-  memset(window, 0, sizeof(double) * window_length);
+    window = new double[frame_size];
+    memset(window, 0, sizeof(double) * frame_size);
 
   if (!sym) {
-    synthesis_window = new double[window_length];
-    memset(synthesis_window, 0, sizeof(double) * window_length);
+    synthesis_window = new double[frame_size];
+    memset(synthesis_window, 0, sizeof(double) * frame_size);
   }
 
 }

@@ -315,11 +315,6 @@ void STFT::istft(double**in,double**out){
   /*** Window ***/
   hw->Process(in, channels);
 
-  // scaling for precision
-  for (int i = 0; i < channels; i++)
-    for (int j = 0; j < frame_size; j++)
-      in[i][j] *= MATLAB_scale;
-
   /*** Output ***/
   ap->Overlap(in);
   for (int i = 0; i < channels; i++)

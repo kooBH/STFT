@@ -4,7 +4,7 @@
 
 int main() {
   int n_channels = 1;
-  int n_hop = 128;
+  int n_hop = 256;
   int n_fft = 512;
   int n_overlap = n_fft - n_hop;
 
@@ -15,7 +15,7 @@ int main() {
   LPF *lpf = new LPF(n_channels);
 
   Ooura_FFT* fft = new Ooura_FFT(n_fft, n_channels);
-  HannWindow* hw = new HannWindow(n_fft, n_hop);
+  SineWindow* hw = new SineWindow(n_fft, n_hop,-1,false);
   OA*ap = new OA(n_fft, n_hop, n_channels);
 
   x = new double* [n_channels];

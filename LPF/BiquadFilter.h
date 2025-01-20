@@ -361,16 +361,21 @@ void BiquadFilter::Filter(double* x, int n_sample) {
 	}
 	memcpy(tmp, x, sizeof(double) * n_sample);
 
+
+	// type-2 
 	for (int i = 0; i < n_sample; i++) {
-		x[i] = b[1] * tmp[i] + u[1];
+		// y(i) = b(1)*x(i)+u(1);
+		x[i] = b[0] * tmp[i] + u[0];
 
 		// u = [u(2:pq), 0];
 		u[0] = u[1];
 		u[1] = 0;
 
+		// u(1:q) = u(1:q) + b(2:q+1) * x(i);
 		u[0] = u[0] + b[1] * tmp[i];
 		u[1] = u[1] + b[2] * tmp[i];
 
+		// u(1:p) = u(1:p) - a*y(i);
 		u[0] = u[0] - a[1] * x[i];
 		u[1] = u[1] - a[2] * x[i];
 	}

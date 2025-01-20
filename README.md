@@ -1,9 +1,12 @@
 # STFT
 
-STFT(Short Time Fourier Transform), ISTFT(Inverse - Short Time Fourier Transform) for wav,mic input  
+STFT(Short Time Fourier Transform), ISTFT(Inverse - Short Time Fourier Transform) for wav,mic input.  
+And other pre-processings. 
 
-provides 25%,50% overlap STFT process.   
-Using DFT, iDFT when n_fft(frame_size) is not power of 2.  
++ Provides 25%,50% overlap STFT process.   
++ DFT, iDFT for the case that n_fft(frame_size) is not power of 2.  
++ Mel-filterbank for both HTK-style(pytorch default) and slaney-style(librosa-default)  
++ LPF for perceptual quality. 
 
 ## NOTE
 

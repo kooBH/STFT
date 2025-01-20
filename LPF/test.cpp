@@ -8,7 +8,7 @@ int main() {
   int n_fft = 512;
   int n_overlap = n_fft - n_hop;
 
-  WAV wav_in,wav_out;
+  WAV wav_in,wav_out(n_channels,16000);
   double **x, **X, **y;
   short* buf_io;
 

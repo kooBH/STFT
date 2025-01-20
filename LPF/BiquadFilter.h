@@ -264,7 +264,7 @@ BiquadFilter::BiquadFilter(int type, double Fc, double Fs, double Q, double peak
 
 	switch (type) {
 	case BiquadFilter::TYPE::highpass:
-		norm = 1.0 / (1,0 + K/Q + K*K);
+		norm = 1.0 / (1.0 + K/Q + K*K);
 		b0 = 1 * norm;
 		b1 = -2 * b0;
 		b2 = b0;
@@ -274,14 +274,14 @@ BiquadFilter::BiquadFilter(int type, double Fc, double Fs, double Q, double peak
 		break;
 	case BiquadFilter::TYPE::peak:
 		if (peakGain >= 0.0) {
-			norm = 1.0 / (1, 0 + 1.0/Q*K + K*K);
+			norm = 1.0 / (1.0 + 1.0/Q*K + K*K);
 			b0 = (1 + V / Q * K + K * K) * norm;
 			b1 = 2.0 * (K * K - 1) * norm;
 			b2 = (1 - V / Q * K + K * K) * norm;
 			a1 = b1;
 			a2 = (1 - 1 / Q * K + K * K) * norm;
 		}else{
-			norm = 1.0 / (1, 0 + V/Q*K + K*K);
+			norm = 1.0 / (1.0 + V/Q*K + K*K);
 			b0 = (1 + 1 / Q * K + K * K) * norm;
 			b1 = 2.0 * (K * K - 1) * norm;
 			b2 = (1 - 1 / Q * K + K * K) * norm;
@@ -363,6 +363,8 @@ void BiquadFilter::Filter(double* x, int n_sample) {
 
 	for (int i = 0; i < n_sample; i++) {
 		x[i] = b[1] * tmp[i] + u[1];
+
+		// u = [u(2:pq), 0];
 		u[0] = u[1];
 		u[1] = 0;
 

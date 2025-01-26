@@ -1,6 +1,6 @@
 # CMAKE version of Ubuntu 16.04 is 3.5.
 cmake_minimum_required(VERSION 3.5)
-project(LPF)
+project(BF)
 
 set(SRC)
 set(INCL)
@@ -16,7 +16,7 @@ list(APPEND INCL
 
 add_executable(test ${SRC}
 ${CMAKE_CURRENT_LIST_DIR}/test.cpp
-${CMAKE_CURRENT_LIST_DIR}/LPF.h
+${CMAKE_CURRENT_LIST_DIR}/BF.h
 ${CMAKE_CURRENT_LIST_DIR}/BiquadFilter.h
 
 )

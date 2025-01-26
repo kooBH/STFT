@@ -1,6 +1,6 @@
 #include "WAV.h"
 #include "STFT.h"
-#include "LPF.h"
+#include "BF.h"
 
 int main() {
   int n_channels = 1;
@@ -12,7 +12,7 @@ int main() {
   double **x, **X, **y;
   short* buf_io;
 
-  LPF *lpf = new LPF(n_channels);
+  BF *BF = new BF(n_channels);
 
   Ooura_FFT* fft = new Ooura_FFT(n_fft, n_channels);
   SineWindow* hw = new SineWindow(n_fft, n_hop,-1,false);
@@ -59,7 +59,7 @@ int main() {
     fft->iFFT(X);
 
     // IIR Fiter in iSTFT
-    lpf->Process(X, n_fft);
+    BF->Process(X, n_fft);
 
     /*** Window ***/
     hw->Process(X, n_channels);

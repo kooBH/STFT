@@ -351,8 +351,10 @@ elseif typ == 2
 				u(1:q) = u(1:q) + b(2:q+1) * x(i);
 				u(1:p) = u(1:p) - a*y(i);
 		end
-
 */
+
+
+
 void BiquadFilter::Filter(double* x, int n_sample) {
 	if (size_tmp < n_sample) {
 		if (tmp)delete[] tmp;

@@ -1,5 +1,5 @@
-#ifndef _H_LPF_H_
-#define _H_LIP_H_
+#ifndef _H_BF_H_
+#define _H_BF_H_
 
 #include "BiquadFilter.h"
 
@@ -34,17 +34,17 @@ type = 9;
 [b3,a3] = BiquadFilterCoeff(type, fc, fs, Q, gain);
 [H3,f] = freqz(b3,a3,fftSize,fs);
 */
-class LPF {
+class BF {
 private : 
   std::vector<BiquadFilter*>f1, f2, f3;
   int n_channels;
 public : 
-  LPF(int n_channels);
-  ~LPF();
+  BF(int n_channels);
+  ~BF();
   void Process(double**x, int n_sample);
 };
 
-LPF::LPF(int n_channels_){
+BF::BF(int n_channels_){
   double Fs = 16000, Fc;
   double BW, Q, gain;
   n_channels = n_channels_;
@@ -77,7 +77,7 @@ LPF::LPF(int n_channels_){
   }
 }
 
-LPF::~LPF() {
+BF::~BF() {
   for (auto item: f1)
     delete item;
   for (auto item: f2)
@@ -89,12 +89,19 @@ LPF::~LPF() {
   f3.clear();
 }
 
-void LPF::Process(double **x, int n_sample) {
+void BF::Process(double **x, int n_sample) {
+  n_sample = 10;
+  for (int i = 0; i < 10; i++)
+    x[0][i] = i + 1;
+
   for (int i = 0; i < n_channels; i++) {
     f1[i]->Filter(x[i], n_sample);
     f2[i]->Filter(x[i], n_sample);
     f3[i]->Filter(x[i], n_sample);
   }
+  for (int i = 0; i < 10; i++)
+    printf("%d : %lf\n",i+1,x[0][i]);
+  printf("--\n");
 }
 
 

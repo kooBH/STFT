@@ -14,7 +14,7 @@ set(INCL WAV)
 set(COMPILE_OPTION)
 set(SRC 
   test.cpp 
-  cpp/HannWindow.h
+  cpp/WindowFunction.h
   cpp/Ooura_FFT.h
   cpp/OA.h
   cpp/STFT.h

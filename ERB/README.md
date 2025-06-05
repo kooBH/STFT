@@ -1,0 +1,1 @@
+# equivalent rectangular bandwidth filterbank  

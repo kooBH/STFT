@@ -8,6 +8,11 @@ And other pre-processings.
 + Mel-filterbank for both HTK-style(pytorch default) and slaney-style(librosa-default)  
 + LPF for perceptual quality. 
 
+## TODO
+- ERB filterbank & normalization  
+- Vorbis window  & spectrogram normalization  
+- C++ wrapper for C  
+
 ## NOTE
 
 ```git clone --recursive https://github.com/kooBH/STFT.git```
@@ -98,8 +103,3 @@ while(!input.IsEOF()){
   }
 
 ```
-
-## STATUS
-
-C       : only STFT is implemented, iSTFT is not implemented yet   
-C++    : verified (same output as MATLAB routine)  

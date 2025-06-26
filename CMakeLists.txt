@@ -14,12 +14,12 @@ set(INCL WAV)
 set(COMPILE_OPTION)
 set(SRC 
   test.cpp 
-  cpp/WindowFunction.h
-  cpp/Ooura_FFT.h
-  cpp/OA.h
-  cpp/STFT.h
-  cpp/DFT.h
-  cpp/FFT.h
+  WindowFunction.h
+  Ooura_FFT.h
+  OA.h
+  STFT.h
+  DFT.h
+  FFT.h
   WAV/WAV.h
   )
 

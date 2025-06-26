@@ -8,7 +8,7 @@ set(LINKLIBS)
 set(COMPILE_OPTION)
 
 include(${CMAKE_CURRENT_LIST_DIR}/../../WAV/WAV.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/../cpp/STFT_cpp.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../STFT.cmake)
 
 list(APPEND INCL
   ${CMAKE_CURRENT_LIST_DIR}/ )

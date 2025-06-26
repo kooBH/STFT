@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(mel_test)
 
-include(${CMAKE_CURRENT_LIST_DIR}/../cpp/STFT_cpp.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../STFT.cmake)
 
 if(MSVC)
   
@@ -13,7 +13,7 @@ else(MSVC)
 endif()
 
 set(INCL 
-	${CMAKE_CURRENT_LIST_DIR}/../cpp
+	${CMAKE_CURRENT_LIST_DIR}/..
 	)
 set(COMPILE_OPTION)
 set(SRC 

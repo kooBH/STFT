@@ -25,7 +25,8 @@ class STFT{
     int shift_size;
     int ol;
 
-    double**buf;
+    double**buf = nullptr;
+    double* tmp = nullptr;
 
     bool is_power_of_two(int num) {
       if (num <= 0) {
@@ -71,12 +72,14 @@ class STFT{
       out : 1 x frame_size + 2 (half FFT in complex)
     */
     inline void stft(short* in, double* out);
+    inline void stft(float* in, float* out);
     inline void stft(double* in, double* out);
 
     /* Single-Channel ISTFT   
       in : 1 x frame_size + 2 (half FFT in complex)
       out : 1 x shift_size     */
     inline void istft(double* in, short* out);
+    inline void istft(float* in, float* out);
     inline void istft(double* in, double* out);
 
     //for separated 3-channels wav
@@ -108,6 +111,9 @@ STFT::STFT(int channels_,int frame_,int shift_){
     buf[i] = new double[frame_size];
     memset(buf[i],0,sizeof(double)*frame_size);
   }
+
+  tmp = new double[frame_size + 2];
+  memset(tmp, 0, sizeof(double) * (frame_size + 2));
 }
 
 STFT::~STFT(){
@@ -118,6 +124,7 @@ STFT::~STFT(){
   for(i=0;i<channels;i++)
     delete[] buf[i];
   delete[] buf;
+  if (tmp)delete[] tmp;
 
 }
 
@@ -215,6 +222,29 @@ void STFT::stft(short* in, double* out){
     /*** FFT ***/
     fft->FFT(out);
 }
+
+void STFT::stft(float* in, float* out) {
+  int i;
+  /*** Shfit & Copy***/
+  for (i = 0; i < ol; i++) {
+    buf[0][i] = buf[0][i + shift_size];
+  }
+  for (i = 0; i < shift_size; i++)
+    buf[0][ol + i] = static_cast<double>(in[i]);
+
+  memcpy(tmp, buf[0], sizeof(double) * frame_size);
+
+  /*** Window ***/
+  hw->Process(tmp);
+
+  /*** FFT ***/
+  fft->FFT(tmp);
+
+  for (int i = 0; i < frame_size+2; i++) {
+    out[i] = static_cast<float>(tmp[i]);
+  }
+}
+
 void STFT::stft(double* in, double* out) {
     int i;
 	/*** Shfit & Copy***/
@@ -291,6 +321,26 @@ void STFT::istft(double* in, short* out) {
   /*** Output ***/
   memcpy(out,ap->Overlap(in),sizeof(short)*shift_size);
 }
+
+void STFT::istft(float* in, float* out) {
+  for(int i=0;i<frame_size+2;i++)
+    tmp[i] = static_cast<double>(in[i]);
+
+  /*** iFFT ***/
+  fft->iFFT(tmp);
+
+  /*** Window ***/
+  hw->Process(tmp);
+
+  //for (int j = 0; j < frame_size; j++)tmp[j] *= MATLAB_scale;
+
+  /*** Output ***/
+  ap->Overlap(tmp);
+  //memcpy(out,ap->Overlap(in),sizeof(short)*shift_size);
+  for (int i = 0; i < shift_size; i++)
+    out[i] = static_cast<float>(ap->Get_buf()[0][i]);
+}
+
 void STFT::istft(double* in, double* out) {
   /*** iFFT ***/
   fft->iFFT(in);
@@ -298,8 +348,7 @@ void STFT::istft(double* in, double* out) {
   /*** Window ***/
   hw->Process(in);
 
-  for (int j = 0; j < frame_size; j++)
-    in[j] *= MATLAB_scale;
+  //for (int j = 0; j < frame_size; j++)in[j] *= MATLAB_scale;
 
   /*** Output ***/
   ap->Overlap(in);

@@ -1,6 +1,8 @@
 #ifndef _H_FFT_BASE_
 #define _H_FFT_BASE_
 
+#include <string.h>
+
 class FFTbase {
 private : 
 

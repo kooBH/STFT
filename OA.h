@@ -34,6 +34,7 @@ public:
     inline short *Frame2Wav(double *in);
     inline short *Get_output(); 
     inline double** Get_buf(); 
+    inline void Clear();
 };
 
 inline OA::OA(uint32_t _frame_size,
@@ -154,6 +155,13 @@ short* OA::Get_output(){
 }
 double** OA::Get_buf(){
     return buf;    
+}
+
+void OA::Clear() {
+  memset(output, 0, sizeof(short) * shift_size * channels);
+  for (int i = 0; i < static_cast<int>(channels); i++)
+    memset(buf[i], 0, sizeof(double) * frame_size);
+  
 }
 
 

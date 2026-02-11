@@ -84,6 +84,8 @@ class STFT{
 
     //for separated 3-channels wav
     inline void stft(short* in_1, short* in_2, short* in_3, int length, double** out);
+
+    inline void Clear();
 };
 
 
@@ -407,6 +409,11 @@ void STFT::istft(double**in,float**out){
       out[i][j] = static_cast<float>(ap->Get_buf()[i][j]);
 }
 
-
+void STFT::Clear() {
+  memset(tmp, 0, sizeof(double) * (frame_size + 2));
+  for(int i=0;i<channels;i++)
+    memset(buf[i], 0, sizeof(double) * frame_size);
+  ap->Clear();
+}
 
 #endif
